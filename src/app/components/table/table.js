@@ -30,7 +30,7 @@ for (const column of ['Наименование', 'ИНН', 'КПП', 'Адре�
 }
 tHeadElement.appendChild(headRowElement);
 
-window.refreshCounterParty = function() {
+window.getCounterparty = function() {
     let counterParty = items;
     try {
         counterParty = JSON.parse(localStorage.getItem('counterParty'));
@@ -41,6 +41,12 @@ window.refreshCounterParty = function() {
         counterParty = items;
         localStorage.setItem('counterParty', JSON.stringify(counterParty));
     }
+
+    return counterParty;
+}
+
+window.refreshCounterParty = function() {
+    let counterParty = getCounterparty();
 
     tBodyElement.innerHTML = "";
     for (const item of counterParty) {
@@ -53,21 +59,17 @@ window.refreshCounterParty = function() {
         createRowColumn(newRow, templateRowCol, trash);
 
         newRow.querySelector(".trash-button").addEventListener('click', (e) => {
-            let counterParty = items;
-            try {
-                counterParty = JSON.parse(localStorage.getItem('counterParty'));
-            } catch (ignore) {
-            }
-
-            if (counterParty == null || !Array.isArray(counterParty)) {
-                counterParty = items;
-            }
+            let counterParty = getCounterparty();
 
             counterParty = counterParty.filter(itm => itm.id != item.id);
 
             localStorage.setItem('counterParty', JSON.stringify(counterParty));
 
             refreshCounterParty();
+        });
+
+        newRow.addEventListener('click', (e) => {
+            showModal(item.id);
         });
     }
 }

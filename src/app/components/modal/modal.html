@@ -21,6 +21,7 @@
                     <div class="mt-4 w-full">
                         <label for="name" class="modal-label">Name</label>
                         <input type="text" id="name" class="modal-input" required placeholder="Вася Пупки и Ко">
+                        <input type="hidden" id="id" class="modal-input" value="">
                     </div>
                     <div class="mt-4 w-full">
                         <label for="inn" class="modal-label">Inn</label>
@@ -35,7 +36,7 @@
                         <textarea rows="3" id="address" class="modal-input" required minlength="1" placeholder="12345678901"></textarea>
                     </div>
                     <div class="flex items-center border-gray-200 rounded-b dark:border-gray-600 mt-10">
-                        <button data-modal-hide="default-modal" type="submit" name="create" class="w-1/2 mr-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Создать</button>
+                        <button type="submit" name="create" class="w-1/2 mr-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Создать</button>
                         <button data-modal-hide="default-modal" type="button" name="cancel" class="w-1/2 ml-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Отмена</button>
                     </div>
                 </form>

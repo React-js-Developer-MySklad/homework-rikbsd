@@ -23,6 +23,11 @@
     @apply dark:border-gray-700;
 }
 
+.data-row:hover {
+    @apply bg-blue-100;
+    @apply dark:bg-blue-900;
+}
+
 .data-head-item {
     @apply px-6;
     @apply py-3;

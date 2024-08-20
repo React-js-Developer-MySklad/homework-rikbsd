@@ -8,7 +8,7 @@ const rootElement = document.getElementById('root');
 rootElement.innerHTML = html;
 
 const headerElement = document.getElementsByTagName('header').item(0);
-headerElement.innerHTML = header();
+headerElement.append(header());
 
 const footerElement = document.getElementsByTagName('footer').item(0);
 footerElement.innerHTML = footer();
