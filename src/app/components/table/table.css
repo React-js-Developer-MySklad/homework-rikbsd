@@ -1,0 +1,34 @@
+.data-table {
+    @apply w-full;
+    @apply text-sm;
+    @apply text-left;
+    @apply rtl:text-right;
+    @apply text-gray-500;
+    @apply dark:text-gray-400;
+}
+
+.data-head {
+    @apply text-xs;
+    @apply text-gray-700;
+    @apply uppercase;
+    @apply bg-gray-50;
+    @apply dark:bg-gray-700;
+    @apply dark:text-gray-400;
+}
+
+.data-row {
+    @apply bg-white;
+    @apply border-b;
+    @apply dark:bg-gray-800;
+    @apply dark:border-gray-700;
+}
+
+.data-head-item {
+    @apply px-6;
+    @apply py-3;
+}
+
+.data-col-item {
+    @apply px-6;
+    @apply py-4;
+}
