@@ -1,6 +1,7 @@
 import {Table} from '../table/table';
 import {AddModal} from "../modal/modal";
 import React, {useEffect, useState} from "react";
+import {CounterPartyRecord} from "../../model/counter_party_record";
 
 type iProps = {
     showModal: boolean
@@ -22,8 +23,13 @@ export const Main: React.FC<iProps> = ({showModal, onModalClose}) => {
         setModalData(null);
     };
 
+    const modalCallBack = (data: CounterPartyRecord) => {
+        setModalData(data);
+        setModalState(true);
+    }
+
     return (<>
-        <div id="table"><Table data={newData} modalCallBack={setModalData}/></div>
+        <div id="table"><Table data={newData} modalCallBack={modalCallBack}/></div>
         <div id="modal"><AddModal data={modalData} onAdd={setNewData} openModal={modalState} onModalClose={() => onMyModalClose()}/></div>
     </>);
 }

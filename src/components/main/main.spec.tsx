@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom'
-import {render, screen, prettyDOM, act} from "@testing-library/react";
+import {render, screen, act} from "@testing-library/react";
 import {Main} from './main';
 
 const modalFromTable = jest.fn();
