@@ -1,13 +1,15 @@
 import html from './modal.html';
 import './modal.css';
 import {v4 as uuidv4} from 'uuid';
+import {getCounterparty, refreshCounterParty} from '../table/table';
 
 const element = document.createElement('div')
 element.innerHTML = html;
 
 const formElement = element.querySelector('form');
 
-window.showModal = function(id) {
+const showModal = function(id) {
+    console.log(id);
     let counterParty = getCounterparty();
 
     for (const item of counterParty) {
@@ -28,7 +30,7 @@ window.showModal = function(id) {
 }
 
 
-window.formClear = function () {
+const formClear = function () {
     // Если форма заполнялась с нуля - не сбрасываем
     if (formElement.querySelector('input[id="id"]').value !== "") {
         formElement.reset();
@@ -85,4 +87,6 @@ formElement.addEventListener('submit', (e) => {
 }, true);
 
 
-export default () => element;
+const modal = () => element;
+export {showModal, formClear, modal};
+export default modal;

@@ -3,6 +3,8 @@ import trash from './trash.html';
 import './table.css';
 import items from './item';
 
+import {showModal} from '../modal/modal'
+
 const divElement = document.createElement('div');
 
 divElement.innerHTML = html;
@@ -30,7 +32,7 @@ for (const column of ['Наименование', 'ИНН', 'КПП', 'Адре�
 }
 tHeadElement.appendChild(headRowElement);
 
-window.getCounterparty = function() {
+const getCounterparty = function() {
     let counterParty = items;
     try {
         counterParty = JSON.parse(localStorage.getItem('counterParty'));
@@ -45,7 +47,7 @@ window.getCounterparty = function() {
     return counterParty;
 }
 
-window.refreshCounterParty = function() {
+const refreshCounterParty = function() {
     let counterParty = getCounterparty();
 
     tBodyElement.innerHTML = "";
@@ -75,5 +77,6 @@ window.refreshCounterParty = function() {
 }
 
 refreshCounterParty();
-
-export default () => divElement;
+const table = () => divElement;
+export {getCounterparty, refreshCounterParty, table};
+export default table;
