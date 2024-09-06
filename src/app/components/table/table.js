@@ -1,14 +1,15 @@
 import html from './table.html';
 import trash from './trash.html';
 import './table.css';
-import items from './item';
 
+import {v4 as uuidv4} from "uuid";
+
+import {getCounterParty, setCounterParty} from "../../lib/counterparty_storage/counterparty_storage";
 import {showModal} from '../modal/modal'
 
 const divElement = document.createElement('div');
 
 divElement.innerHTML = html;
-
 
 const tHeadElement = divElement.querySelector('thead');
 const tBodyElement = divElement.querySelector('tbody');
@@ -32,26 +33,14 @@ for (const column of ['Наименование', 'ИНН', 'КПП', 'Адре�
 }
 tHeadElement.appendChild(headRowElement);
 
-const getCounterparty = function() {
-    let counterParty = items;
-    try {
-        counterParty = JSON.parse(localStorage.getItem('counterParty'));
-    } catch (ignore) {
+
+const refreshCounterParty = (data) => {
+    if (data !== undefined) {
+        setCounterParty(data);
     }
-
-    if (counterParty == null || !Array.isArray(counterParty)) {
-        counterParty = items;
-        localStorage.setItem('counterParty', JSON.stringify(counterParty));
-    }
-
-    return counterParty;
-}
-
-const refreshCounterParty = function() {
-    let counterParty = getCounterparty();
 
     tBodyElement.innerHTML = "";
-    for (const item of counterParty) {
+    for (const item of getCounterParty()) {
         const newRow = createRowColumn(tBodyElement, templateRow, '');
 
         createRowColumn(newRow, templateRowCol, item.name);
@@ -61,22 +50,36 @@ const refreshCounterParty = function() {
         createRowColumn(newRow, templateRowCol, trash);
 
         newRow.querySelector(".trash-button").addEventListener('click', (e) => {
-            let counterParty = getCounterparty();
-
-            counterParty = counterParty.filter(itm => itm.id != item.id);
-
-            localStorage.setItem('counterParty', JSON.stringify(counterParty));
-
-            refreshCounterParty();
+            e.stopPropagation();
+            refreshCounterParty(getCounterParty().filter(itm => itm.id !== item.id));
         });
 
         newRow.addEventListener('click', (e) => {
-            showModal(item.id);
+            showModal(item);
         });
     }
 }
 
+
+const addCounterParty = (record) => {
+    let counterParty = getCounterParty()
+
+    if (record.id !== '') {
+        counterParty.forEach((item, i) => {
+            if (item.id === record.id) {
+                counterParty[i] = record;
+            }
+        })
+    } else {
+        record.id = uuidv4();
+        counterParty.push(record);
+    }
+
+    refreshCounterParty(counterParty);
+}
+
+
 refreshCounterParty();
 const table = () => divElement;
-export {getCounterparty, refreshCounterParty, table};
+export {addCounterParty, refreshCounterParty, table};
 export default table;

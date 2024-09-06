@@ -1,32 +1,21 @@
 import html from './modal.html';
 import './modal.css';
-import {v4 as uuidv4} from 'uuid';
-import {getCounterparty, refreshCounterParty} from '../table/table';
+import {addCounterParty} from '../table/table';
 
 const element = document.createElement('div')
 element.innerHTML = html;
 
 const formElement = element.querySelector('form');
 
-const showModal = function(id) {
-    console.log(id);
-    let counterParty = getCounterparty();
 
-    for (const item of counterParty) {
-        if (item.id !== id) {
-            continue;
-        }
-
-        formElement.querySelector('input[id="id"]').value = item.id;
-        formElement.querySelector('input[id="name"]').value = item.name;
-        formElement.querySelector('input[id="inn"]').value = item.inn;
-        formElement.querySelector('input[id="kpp"]').value = item.kpp;
-        formElement.querySelector('textarea[id="address"]').value = item.address;
-        formElement.querySelector('button[name="create"]').innerHTML = "Сохранить";
-        FlowbiteInstances.getInstance("Modal", "default-modal").show();
-
-        return;
-    }
+const showModal = function(item) {
+    formElement.querySelector('input[id="id"]').value = item.id;
+    formElement.querySelector('input[id="name"]').value = item.name;
+    formElement.querySelector('input[id="inn"]').value = item.inn;
+    formElement.querySelector('input[id="kpp"]').value = item.kpp;
+    formElement.querySelector('textarea[id="address"]').value = item.address;
+    formElement.querySelector('button[name="create"]').innerHTML = "Сохранить";
+    FlowbiteInstances.getInstance("Modal", "default-modal").show();
 }
 
 
@@ -61,22 +50,7 @@ formElement.addEventListener('submit', (e) => {
         return false;
     }
 
-    let counterParty = getCounterparty()
-
-    if (record.id !== '') {
-        counterParty.forEach((item, i) => {
-            if (item.id === record.id) {
-                counterParty[i] = record;
-            }
-        })
-    } else {
-        record.id = uuidv4();
-        counterParty.push(record);
-    }
-
-    localStorage.setItem('counterParty', JSON.stringify(counterParty));
-
-    refreshCounterParty();
+    addCounterParty(record);
 
     FlowbiteInstances.getInstance("Modal", "default-modal").hide();
 
