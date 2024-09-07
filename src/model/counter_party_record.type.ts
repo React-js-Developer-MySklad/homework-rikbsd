@@ -1,4 +1,4 @@
-export interface CounterPartyRecord {
+export type CounterPartyRecord = {
     id: string|null;
     name: string;
     inn: number;

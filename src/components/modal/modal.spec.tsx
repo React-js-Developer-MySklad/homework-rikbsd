@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent} from "@testing-library/react";
 import {AddModal} from './modal';
-import {CounterPartyRecord} from "../../model/counter_party_record";
+import {CounterPartyRecord} from "../../model/counter_party_record.type";
 import {userEvent} from "@testing-library/user-event";
 
 const FlowbiteMock = (function () {

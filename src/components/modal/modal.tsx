@@ -1,6 +1,6 @@
 import React, {FormEvent, useEffect, useRef, useState} from "react";
 
-import {CounterPartyRecord} from '../../model/counter_party_record';
+import {CounterPartyRecord} from '../../model/counter_party_record.type';
 
 import './modal.css';
 import cross from '../../assets/cross.svg';

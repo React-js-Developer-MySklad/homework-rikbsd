@@ -1,7 +1,7 @@
 import {Table} from '../table/table';
 import {AddModal} from "../modal/modal";
 import React, {useEffect, useState} from "react";
-import {CounterPartyRecord} from "../../model/counter_party_record";
+import {CounterPartyRecord} from "../../model/counter_party_record.type";
 
 type iProps = {
     showModal: boolean

@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent} from "@testing-library/react";
 
-import {CounterPartyRecord} from "../../model/counter_party_record";
+import {CounterPartyRecord} from "../../model/counter_party_record.type";
 import {Table} from './table';
 import items from './items';
 
