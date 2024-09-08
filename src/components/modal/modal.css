@@ -1,0 +1,41 @@
+#default-modal > div {
+    width: 416px;
+}
+
+.modal-label {
+    @apply block;
+    @apply mb-2;
+    @apply text-sm;
+    @apply font-medium;
+    @apply text-gray-500;
+    @apply dark:text-white;
+}
+
+.modal-input {
+    @apply block;
+    @apply w-full;
+    /*@apply ps-10;*/
+    @apply p-2.5;
+    @apply text-gray-900;
+    @apply border;
+    @apply border-gray-300;
+    @apply rounded-lg;
+    @apply bg-gray-50;
+    @apply text-sm;
+    @apply focus:ring-blue-500;
+    @apply focus:border-blue-500;
+    @apply dark:bg-gray-700;
+    @apply dark:border-gray-600;
+    @apply dark:placeholder-gray-400;
+    @apply dark:text-white;
+    @apply dark:focus:ring-blue-500;
+    @apply dark:focus:border-blue-500;
+}
+
+.modal-input:valid {
+    @apply bg-green-50;
+}
+
+.modal-input:invalid {
+    @apply bg-red-50;
+}
