@@ -1,0 +1,32 @@
+header > div {
+    margin-top: 10px;
+    display: flex;
+}
+
+header .logo {
+    width: 156px;
+    height: 24px;
+    float: left;
+}
+
+.header-button {
+    @apply ml-auto;
+    @apply mr-0;
+    @apply me-2;
+    @apply mb-2;
+    @apply text-white;
+    @apply inline-flex;
+    @apply bg-blue-700;
+    @apply hover:bg-blue-800;
+    @apply focus:ring-4;
+    @apply focus:ring-blue-300;
+    @apply font-medium;
+    @apply rounded-lg;
+    @apply text-sm;
+    @apply px-5;
+    @apply py-2.5;
+    @apply dark:bg-blue-600;
+    @apply dark:hover:bg-blue-700;
+    @apply focus:outline-none;
+    @apply dark:focus:ring-blue-800;
+}
