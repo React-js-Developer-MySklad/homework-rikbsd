@@ -1,9 +1,12 @@
-import React, {FormEvent, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import {Form} from "react-final-form";
 
 import {CounterPartyRecord} from '../../model/counter_party_record.type';
 
 import './modal.css';
 import cross from '../../assets/cross.svg';
+import {ModalField} from "./field";
+
 
 type iProps = {
     data: CounterPartyRecord|null,
@@ -14,17 +17,12 @@ type iProps = {
 
 
 export const AddModal: React.FC<iProps> = ({data, openModal, onAdd, onModalClose}) => {
-    const formEl = useRef(null);
     const [bCreate, setButtonCreate] = useState('Создать');
+    const [initialValues, setInitialValues] = useState({});
 
 
     useEffect(() => {
-        if (openModal) {
-            if (formEl.current.elements['id'].value !== '' && formEl.current.elements['id'].value !== null) {
-                formEl.current.reset();
-            }
-            showModal(data);
-        }
+        openModal && showModal(data);
     }, [openModal]);
 
 
@@ -32,52 +30,38 @@ export const AddModal: React.FC<iProps> = ({data, openModal, onAdd, onModalClose
         const modal = window.FlowbiteInstances.getInstance("Modal", "default-modal");
         modal.updateOnHide(onModalClose);
 
-        if (data !== null) {
-            formEl.current.elements['id'].value = data.id;
-            formEl.current.elements['name'].value = data.name;
-            formEl.current.elements['inn'].value = data.inn;
-            formEl.current.elements['kpp'].value = data.kpp;
-            formEl.current.elements['address'].value = data.address;
-            setButtonCreate('Сохранить');
-        } else if (formEl.current.elements['id'].value !== '') {
-            formEl.current.elements['id'].value = null;
-            formEl.current.elements['name'].value = null;
-            formEl.current.elements['inn'].value = null;
-            formEl.current.elements['kpp'].value = null;
-            formEl.current.elements['address'].value = null;
-            setButtonCreate('Создать');
-        }
+        setInitialValues(data !== null ? data : {});
+        setButtonCreate(data !== null ? 'Сохранить' : 'Создать');
 
         modal.show();
     }
 
 
-    const onSubmit = function(event: FormEvent) {
-        event.preventDefault();
-        let data: CounterPartyRecord = {
-            id: formEl.current.elements['id'].value,
-            name: formEl.current.elements['name'].value,
-            inn: +formEl.current.elements['inn'].value,
-            kpp: +formEl.current.elements['kpp'].value,
-            address: formEl.current.elements['address'].value
-        };
-
-        if (data.name.length === 0 ||
-            formEl.current.elements['inn'].value.length !== 11 ||
-            formEl.current.elements['kpp'].value.length !== 9 ||
-            data.address.length < 1
-        ) {
-            event.stopPropagation();
-            return false;
-        }
-
+    const ffFormSubmit = (data: CounterPartyRecord) => {
         onAdd(data);
 
+        setInitialValues({});
         window.FlowbiteInstances.getInstance("Modal", "default-modal").hide();
-        formEl.current.reset();
+    };
 
-        return false;
-    }
+
+    const ffFormValidate = (item: CounterPartyRecord) => {
+        let result: any = {};
+        if (!item.name || item.name.length < 1) {
+            result.name = {message: 'Поле name должно быть задано.'};
+        }
+        if (!item.inn || item.inn.toString().length < 11 || !item.inn.toString().match(/^[\d]{11}$/)) {
+            result.inn = {message: 'Поле inn должно быть задано и содержать в точности 11 цифр.'};
+        }
+        if (!item.kpp || item.kpp.toString().length < 9 || !item.kpp.toString().match(/^[\d]{9}$/)) {
+            result.kpp = {message: 'Поле kpp должно быть задано и содержать в точности 9 цифр.'};
+        }
+        if (!item.address || item.address.toString().length < 1) {
+            result.address = {message: 'Поле address должно быть задано.'};
+        }
+
+        return Object.getOwnPropertyNames(result).length !== 0 ? result : undefined;
+    };
 
 
     return (
@@ -97,41 +81,40 @@ export const AddModal: React.FC<iProps> = ({data, openModal, onAdd, onModalClose
                         </div>
                         {/*// -- Modal body --*/}
                         <div className="p-4 md:p-5">
-                            <form name="counterparty" id="counterparty" ref={formEl} onSubmit={onSubmit}>
-                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Контрагент
-                                </h3>
-                                <div className="mt-4 w-full">
-                                    <label htmlFor="name" className="modal-label">Name</label>
-                                    <input type="text" id="name" className="modal-input" required
-                                           placeholder="Вася Пупки и Ко"/>
-                                    <input type="hidden" id="id" className="modal-input"/>
-                                </div>
-                                <div className="mt-4 w-full">
-                                    <label htmlFor="inn" className="modal-label">Inn</label>
-                                    <input type="text" id="inn" className="modal-input" required pattern="^\d{11}$"
-                                           placeholder="12345678901"/>
-                                </div>
-                                <div className="mt-4 w-full">
-                                    <label htmlFor="kpp" className="modal-label">Kpp</label>
-                                    <input type="text" id="kpp" className="modal-input" required pattern="^\d{9}$"
-                                           placeholder="123456789"/>
-                                </div>
-                                <div className="mt-4 w-full">
-                                    <label htmlFor="address" className="modal-label">Address</label>
-                                    <textarea rows={3} id="address" className="modal-input" required minLength={1}
-                                              placeholder="12345678901"/>
-                                </div>
-                                <div className="flex items-center border-gray-200 rounded-b dark:border-gray-600 mt-10">
-                                    <button type="submit" name="create" form="counterparty"
-                                            className="w-1/2 mr-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        {bCreate}
-                                    </button>
-                                    <button data-modal-hide="default-modal" type="button" name="cancel"
-                                            className="w-1/2 ml-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Отмена
-                                    </button>
-                                </div>
-                            </form>
+                            <Form<CounterPartyRecord> onSubmit={ffFormSubmit} validate={ffFormValidate} initialValues={initialValues}>
+                                {props => (
+                                    <form name="counterparty" id="counterparty" onSubmit={async event => {
+                                            await props.handleSubmit(event);
+                                            props.form.reset();
+                                        }}>
+                                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                            Контрагент
+                                        </h3>
+                                        <div className="mt-4 w-full">
+                                            <ModalField type={"text"} name={"name"} placeholder={"Вася Пупки и Ко"} label={"Name"}/>
+                                            <ModalField type={"hidden"} name={"id"}/>
+                                        </div>
+                                        <div className="mt-4 w-full">
+                                            <ModalField type={"text"} name={"inn"} placeholder={"12345678901"} label={"Inn"} pattern="^\d{11}$"/>
+                                        </div>
+                                        <div className="mt-4 w-full">
+                                            <ModalField type={"text"} name={"kpp"} placeholder={"123456789"} label={"Kpp"} pattern="^\d{9}$"/>
+                                        </div>
+                                        <div className="mt-4 w-full">
+                                            <ModalField type={"textarea"} name={"address"} label={"Address"} attrs={{minLength: 1, rows: 3}}/>
+                                        </div>
+                                        <div className="flex items-center border-gray-200 rounded-b dark:border-gray-600 mt-10">
+                                            <button type="submit" name="create" form="counterparty"
+                                                    className="w-1/2 mr-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                {bCreate}
+                                            </button>
+                                            <button data-modal-hide="default-modal" type="button" name="cancel"
+                                                    className="w-1/2 ml-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Отмена
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                            </Form>
                         </div>
                         {/*// -- Modal footer --*/}
                     </div>

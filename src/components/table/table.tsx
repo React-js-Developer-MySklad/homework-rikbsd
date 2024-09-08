@@ -24,7 +24,7 @@ export const Table: React.FC<iProps> = ({data, modalCallBack}) => {
             return;
         }
 
-        (data.id === null || data.id === '') ? dataContext.add(data) : dataContext.apply(data);
+        (data.id === null || data.id === '' || data.id === undefined) ? dataContext.add(data) : dataContext.apply(data);
     }, [data]);
 
 

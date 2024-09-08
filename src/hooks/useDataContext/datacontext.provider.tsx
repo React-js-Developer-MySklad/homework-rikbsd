@@ -49,9 +49,7 @@ export const DataContextProvider: React.FC<PropsWithChildren> = ({children}) => 
                 method: 'DELETE'
             })
             .then(res => {
-                console.log("RES: ", res);
                 context.loadAll();
-                // setItems(res);
             });
         },
         items: items
