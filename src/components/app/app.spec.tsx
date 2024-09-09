@@ -2,6 +2,9 @@ import React from 'react';
 import {render} from "@testing-library/react";
 import {App} from './app';
 
+jest.mock('../table/table', () => ({Table: () => <div>{'Table add mock.'}</div>}));
+jest.mock('../modal/modal', () => ({AddModal: () => <div>{'Modal edit mock.'}</div>}));
+
 describe('App', () => {
 	it('should render a <header/>', () => {
 		const {container} = render(<App />);

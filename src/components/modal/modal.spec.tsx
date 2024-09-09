@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {act} from 'react';
 import {render, screen, fireEvent} from "@testing-library/react";
 import {AddModal} from './modal';
 import {CounterPartyRecord} from "../../model/counter_party_record.type";
@@ -40,7 +40,7 @@ const FlowbiteMock = (function () {
 Object.defineProperty(window, "FlowbiteInstances", { value: FlowbiteMock });
 
 describe('AddModal', () => {
-    const refData: CounterPartyRecord = {id: '2bb52322-b070-4463-a16c-ede444651ad0', name: 'Рога и копыта', inn: 12345678901, kpp: 123456789, address: 'Огородный проезд, 10'};
+    const refData: CounterPartyRecord = {id: '2bb52322-b070-4463-a16c-ede444651ad0', name: 'Рога и копыта', inn: "12345678901", kpp: "123456789", address: 'Огородный проезд, 10'} as unknown as CounterPartyRecord;
     afterEach(() => {
         FlowbiteMock.clear();
     });
@@ -53,7 +53,7 @@ describe('AddModal', () => {
         render(<AddModal data={data} onAdd={onAdd} openModal={true} onModalClose={onModalClose}/>);
 
         const buttonElement = screen.getByText(button);
-        fireEvent.click(buttonElement);
+        act(() => fireEvent.click(buttonElement));
         expect(onAdd).toHaveBeenCalledTimes(0);
 
         const user = userEvent.setup();
@@ -66,9 +66,11 @@ describe('AddModal', () => {
         const {onAdd, buttonElement, user} = setup({...refData, name: ''});
 
         const element = screen.getByLabelText('Name')
-        await user.click(element);
-        await user.keyboard('SomeName');
-        fireEvent.click(buttonElement);
+        await act(async() => {
+            await user.click(element);
+            await user.keyboard('SomeName');
+            fireEvent.click(buttonElement)
+        });
         expect(onAdd).toHaveBeenCalledTimes(1);
         expect(onAdd).toBeCalledWith({...refData, name: 'SomeName'});
     });
@@ -78,12 +80,16 @@ describe('AddModal', () => {
         const {onAdd, buttonElement, user} = setup({...refData, inn: 1234567890});
 
         const element = screen.getByLabelText('Inn')
-        await user.click(element);
-        await user.keyboard('S');
-        fireEvent.click(buttonElement);
+        await act(async() => {
+            await user.click(element);
+            await user.keyboard('S');
+            fireEvent.click(buttonElement);
+        });
         expect(onAdd).toHaveBeenCalledTimes(0);
-        await user.keyboard('{Backspace}1');
-        fireEvent.click(buttonElement);
+        await act(async() => {
+            await user.keyboard('{Backspace}1');
+            fireEvent.click(buttonElement);
+        });
         expect(onAdd).toHaveBeenCalledTimes(1);
         expect(onAdd).toBeCalledWith(refData);
     });
@@ -93,12 +99,16 @@ describe('AddModal', () => {
         const {onAdd, buttonElement, user} = setup({...refData, kpp: 12345678});
 
         const element = screen.getByLabelText('Kpp')
-        await user.click(element);
-        await user.keyboard('S');
-        fireEvent.click(buttonElement);
+        await act(async() => {
+            await user.click(element);
+            await user.keyboard('S');
+            fireEvent.click(buttonElement);
+        });
         expect(onAdd).toHaveBeenCalledTimes(0);
-        await user.keyboard('{Backspace}9');
-        fireEvent.click(buttonElement);
+        await act(async() => {
+            await user.keyboard('{Backspace}9');
+            fireEvent.click(buttonElement);
+        });
         expect(onAdd).toHaveBeenCalledTimes(1);
         expect(onAdd).toBeCalledWith(refData);
     });
@@ -108,9 +118,11 @@ describe('AddModal', () => {
         const {onAdd, buttonElement, user} = setup({...refData, address: ''});
 
         const element = screen.getByLabelText('Address')
-        await user.click(element);
-        await user.keyboard('Some Addr');
-        fireEvent.click(buttonElement);
+        await act(async() => {
+            await user.click(element);
+            await user.keyboard('Some Addr');
+            fireEvent.click(buttonElement);
+        });
         expect(onAdd).toHaveBeenCalledTimes(1);
         expect(onAdd).toBeCalledWith({...refData, address: 'Some Addr'});
     });
@@ -121,14 +133,20 @@ describe('AddModal', () => {
 
         for (const value of ['Name', 'Inn', 'Kpp', 'Address']) {
             // Начинаем с того что проверяем состояние от предыдущего шага, начиная с ничего не введено.
-            fireEvent.click(buttonElement);
+            await act(async() => {
+                fireEvent.click(buttonElement);
+            });
             expect(onAdd).toHaveBeenCalledTimes(0);
-            await user.click(screen.getByLabelText(value));
-            await user.keyboard((refData as any)[value.toLocaleLowerCase()].toString());
+            await act(async() => {
+                await user.click(screen.getByLabelText(value));
+                await user.keyboard((refData as any)[value.toLocaleLowerCase()].toString());
+            });
         }
-        fireEvent.click(buttonElement);
+        await act(async() => {
+            fireEvent.click(buttonElement);
+        });
         expect(onAdd).toHaveBeenCalledTimes(1);
-        expect(onAdd).toBeCalledWith({...refData, id: ''});
+        expect(onAdd).toBeCalledWith({...refData, id: undefined});
         // Так же проверяем что после успешного завершения закроется мадалка.
         expect(onModalClose).toHaveBeenCalledTimes(1);
     });

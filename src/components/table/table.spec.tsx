@@ -8,6 +8,9 @@ import items from './items';
 import '../../lib/__mock__/local_storage_mock'
 import {getStorageValue} from "../../lib/local_storage";
 
+import {DataContextProviderMock} from "../../lib/__mock__/json_server_mock";
+
+
 describe('Table', () => {
     afterEach(() => {
         localStorage.clear();
@@ -17,9 +20,9 @@ describe('Table', () => {
     const setup = (data: CounterPartyRecord = {...items[0], id: ''}, exp: number = 1 + 3) => {
         // Настройка базовых параметров и проверка базового начального состояния
         const modalCallBack = jest.fn();
-        const {rerender} = render(<Table data={null} modalCallBack={modalCallBack}/>);
+        const {rerender} = render(<DataContextProviderMock><Table data={null} modalCallBack={modalCallBack}/></DataContextProviderMock>);
         expect(screen.getAllByRole('row').length).toEqual(1 + 2);
-        rerender(<Table data={data} modalCallBack={modalCallBack}/>);
+        rerender(<DataContextProviderMock><Table data={data} modalCallBack={modalCallBack}/></DataContextProviderMock>);
         expect(screen.getAllByRole('row').length).toEqual(exp);
 
         return {data, modalCallBack, rerender};
